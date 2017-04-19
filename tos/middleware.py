@@ -9,6 +9,12 @@ from django.utils.cache import add_never_cache_headers
 from .compat import get_cache
 from .models import UserAgreement
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+
 cache = get_cache(getattr(settings, 'TOS_CACHE_NAME', 'default'))
 tos_check_url = reverse('tos_check_tos')
 
@@ -51,6 +57,9 @@ class UserAgreementMiddleware(deprecation.MiddlewareMixin if DJANGO_VERSION >= (
 
         # Ping the cache for the user agreement
         user_agreed = cache.get('django:tos:agreed:{0}'.format(str(user_id)), None, version=key_version)
+
+        logger.info("CACHE IS %s" % cache)
+        logger.info("USER AGREED from the cache IS %s" % user_agreed)
 
         # If the cache is missing this user
         if user_agreed is None:
