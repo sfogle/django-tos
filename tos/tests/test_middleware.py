@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -42,6 +43,7 @@ class TestMiddleware(TestCase):
         confirm works.
         """
         self.client.login(username='user2', password='user2pass')
+        #import pdb; pdb.set_trace()
         response = self.client.get(reverse('index'))
         self.assertRedirects(response, reverse('tos_check_tos'))
 
@@ -49,7 +51,23 @@ class TestMiddleware(TestCase):
         response = self.client.post(reverse('tos_check_tos'), {'accept': 'accept'})
 
         # Confirm redirects.
+        import pdb; pdb.set_trace()
         self.assertEqual(response.status_code, 302)
+
+    # def test_middleware_redirects_after_first_accept(self):
+    #     """
+    #     User that hasn't accepted TOS should be redirected to confirm. Also make sure
+    #     confirm works.
+    #     """
+    #     self.client.login(username='user2', password='user2pass')
+    #     response = self.client.get(reverse('index'))
+    #     self.assertRedirects(response, reverse('tos_check_tos'))
+    #
+    #     # Make sure confirm works after middleware redirect.
+    #     response = self.client.post(reverse('tos_check_tos'), {'accept': 'accept'})
+    #
+    #     # Confirm redirects.
+    #     self.assertEqual(response.status_code, 302)
 
     def test_middleware_doesnt_redirect(self):
         """User that has accepted TOS should get 200."""

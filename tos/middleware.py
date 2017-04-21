@@ -58,6 +58,7 @@ class UserAgreementMiddleware(deprecation.MiddlewareMixin if DJANGO_VERSION >= (
         # Ping the cache for the user agreement
         user_agreed = cache.get('django:tos:agreed:{0}'.format(str(user_id)), None, version=key_version)
 
+        print "TEST"
         logger.info("CACHE IS %s" % cache)
         logger.info("USER AGREED from the cache IS %s" % user_agreed)
 
